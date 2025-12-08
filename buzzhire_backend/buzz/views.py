@@ -36,7 +36,7 @@ class GoogleAuthView(APIView):
 
             email = info.get("email")
             name = info.get("name", email)
-            picture = info.get("picture")
+            # picture = info.get("picture")
 
             if email not in settings.WHITELISTED_EMAILS:
                 return Response({"error": "Not allowed"}, status=403)
@@ -44,20 +44,20 @@ class GoogleAuthView(APIView):
             user, created = User.objects.get_or_create(
                 email=email,
                 defaults={"name": name,
-                          "picture": picture,
+                        #   "picture": picture,
                           "lastlogin": datetime.now()}
             )
 
             if not created:
                 user.name = name 
-                user.picture = picture
+                # user.picture = picture
                 user.lastlogin = datetime.now()
                 user.save()
 
             refresh = RefreshToken.for_user(user)
             refresh["email"] = user.email
             refresh["name"] = user.name
-            refresh["picture"] = user.picture
+            # refresh["picture"] = user.picture
 
 
             return Response({
@@ -65,7 +65,7 @@ class GoogleAuthView(APIView):
                 "refresh": str(refresh),
                 "email": email,
                 "name": name,
-                "picture": picture,
+                # "picture": picture,
                 "user_id": user.pk,
             })
 

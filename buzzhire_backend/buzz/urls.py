@@ -7,7 +7,7 @@ urlpatterns = [
     path("google/", GoogleAuthView.as_view()),
 
     # Attendence
-    path("api/attendance/punch-in/", PunchInView.as_view(), name="punch-in"),
-    path("api/attendance/punch-out/", PunchOutView.as_view(), name="punch-out"),
-    path("api/attendance/today/", TodayAttendanceView.as_view()),
+    path("punch-in/", PunchInView.as_view(), name="punch-in"),
+    path("punch-out/", PunchOutView.as_view(), name="punch-out"),
+    path("today/", TodayAttendanceView.as_view()),
 ]

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-w=_i)5ffq3cf28ks6_h#=&xu%k&fyba3ru8es$--6i2^4ngczg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["buzzhire.trueledgrr.com"]
 
 GOOGLE_CLIENT_ID = "848116300203-bsq9l9i5gu9tcqc13h2i0jlns8encv9i.apps.googleusercontent.com"
 
@@ -41,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'buzz.apps.BuzzConfig',   # use AppConfig so signals load
+    'buzz.apps.BuzzConfig',  # use AppConfig so signals load
 ]
 
 MIDDLEWARE = [
@@ -57,12 +59,15 @@ MIDDLEWARE = [
 
 SIMPLE_JWT = {
     'TOKEN_OBTAIN_PAIR_SERIALIZER': 'buzz.serializers.CustomTokenObtainPairSerializer',
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
 }
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://192.168.1.17:3000",
+    "https://clockinout-ten.vercel.app"
 ]
 
 REST_FRAMEWORK = {
@@ -161,5 +166,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 WHITELISTED_EMAILS = [
-    "abhishek.buzzhire@gmail.com",
+    "abhishek.buzzhire@gmail.com","justdoit1572@gmail.com","sandeep.buzzhire@gmail.com","abhishek@buzzhire.in","kashish@buzzhire.in","nitin@buzzhire.in","atul.s.kant@gmail.com","satyajeet@buzzhire.in"
 ]
