@@ -12,7 +12,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Add custom claims
         token['name'] = user.name # <-- Add the name
         token['email'] = user.email # <-- Add the email (if not added by default)
-        # token['email'] = user.picture
+        token['picture'] = user.picture
 
         return token
 

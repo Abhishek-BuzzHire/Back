@@ -166,5 +166,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 WHITELISTED_EMAILS = [
-    "abhishek.buzzhire@gmail.com","justdoit1572@gmail.com","sandeep.buzzhire@gmail.com","abhishek@buzzhire.in","kashish@buzzhire.in","nitin@buzzhire.in","atul.s.kant@gmail.com","satyajeet@buzzhire.in"
+    "abhishek.buzzhire@gmail.com",
+    "justdoit1572@gmail.com",
+    "sandeep.buzzhire@gmail.com",
+    "abhishek@buzzhire.in",
+    "kashish@buzzhire.in",
+    "nitin@buzzhire.in",
+    "atul.s.kant@gmail.com",
+    "satyajeet@buzzhire.in",
+    "abhishek@buzzhire.in",
+    "apoorva@buzzhire.in",
+    "shaymin@buzzhire.in",
+    "somya@buzzhire.in",
+    "tanya@buzzhire.in",
+    "ankit@buzzhire.in",
+    "ankur@buzzhire.in",
+    "arshpreet@buzzhire.in",
+    "jyoti@buzzhire.in",
+    "nishtha@buzzhire.in",
+    "saurabh@buzzhire.in",
+    "neha.sharma@buzzhire.in"
 ]

@@ -9,11 +9,14 @@ from .constants import BRANCHES, PUNCH_RADIUS
 from rest_framework import status
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from google.auth.exceptions import GoogleAuthError
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from rest_framework_simplejwt.tokens import RefreshToken
 from google.auth.exceptions import InvalidValue
-
+from datetime import datetime, date
+from django.utils import timezone
+import pytz
 # Create your views here.
 
 # FOR BRANCH DETECT...
@@ -36,7 +39,7 @@ class GoogleAuthView(APIView):
 
             email = info.get("email")
             name = info.get("name", email)
-            # picture = info.get("picture")
+            picture = info.get("picture")
 
             if email not in settings.WHITELISTED_EMAILS:
                 return Response({"error": "Not allowed"}, status=403)
@@ -44,20 +47,19 @@ class GoogleAuthView(APIView):
             user, created = User.objects.get_or_create(
                 email=email,
                 defaults={"name": name,
-                        #   "picture": picture,
                           "lastlogin": datetime.now()}
             )
 
             if not created:
                 user.name = name 
-                # user.picture = picture
+                user.picture = picture
                 user.lastlogin = datetime.now()
                 user.save()
 
             refresh = RefreshToken.for_user(user)
             refresh["email"] = user.email
             refresh["name"] = user.name
-            # refresh["picture"] = user.picture
+            refresh["picture"] = user.picture
 
 
             return Response({
@@ -65,11 +67,11 @@ class GoogleAuthView(APIView):
                 "refresh": str(refresh),
                 "email": email,
                 "name": name,
-                # "picture": picture,
+                "picture": picture,
                 "user_id": user.pk,
             })
 
-        except InvalidValue as e:
+        except ValueError as e:
             print(f"Google Token Verification Failed: {e}") 
             return Response({"error": f"Invalid token (details: {e})"}, status=400)
         except Exception as e:
@@ -270,6 +272,9 @@ class TodayAttendanceView(APIView):
         is_punched_in = attendance.punch_in_time is not None
         has_punched_out = attendance.punch_out_time is not None
 
+        print("punchInTime:", attendance.punch_in_time)
+        print("punchOutTime:", attendance.punch_out_time)
+
         return Response({
             "status": "success",
             "data": {
@@ -281,4 +286,41 @@ class TodayAttendanceView(APIView):
                 "distance": None,   # distance only calculated at punch time
                 "raw": AttendanceSerializer(attendance).data
             }
+        }, status=200)
+
+
+class TotalWorkingTimeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        today = date.today()
+
+        attendance = Attendance.objects.filter(
+            user=user,
+            punch_in_time__date=today
+        ).order_by("-id").first()
+
+        IST = pytz.timezone("Asia/Kolkata")
+        now_utc = timezone.now()     
+        now_ist = now_utc.astimezone(IST)
+
+        print("Raw Time:", attendance.punch_in_time)
+
+        start = attendance.punch_in_time.replace(tzinfo=None)
+        end = now_ist.replace(tzinfo=None)
+
+        total_seconds = int((end - start).total_seconds())
+
+        hours = total_seconds // 3600
+        minutes = (total_seconds % 3600) // 60
+
+        formatted_time = f"{hours}.{minutes:02}"
+
+        print("START TIME:", start)
+        print("END TIME:", end)
+        print("Work TIME:", formatted_time)
+
+        return Response({
+            "total_working_time": formatted_time
         }, status=200)
